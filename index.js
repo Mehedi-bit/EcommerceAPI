@@ -1,29 +1,21 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const dotenv = require('dotenv')
+const dotenv = require('dotenv').config()
+const userRouter = require('./routes/user.route')
 
 const app  = express()
 
-dotenv.config()
-
 
 mongoose
-    .connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.kdclmsj.mongodb.net/?retryWrites=true&w=majority`)
-    .then(() => {
-        console.log("Success!! Database connected")
-    })
-
-    .catch((err) => {
-        console.log('Something went wrong', err)
-    })
+    .connect(process.env.MONGO_URL)
+    .then(() => console.log("Success!! Database connected"))
+    .catch((err) => console.log('Something went wrong', err))
 
 
-
-app.get('/', (req, res) => {
-    res.send('Hello')
-})
+app.use(express.json())
+app.use('/api/user', userRouter)
 
 
-app.listen(5000, () => {
-    console.log('listening on port 5000')
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`Backend Server Running on port ${process.env.PORT}`)
 })
