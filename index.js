@@ -1,9 +1,11 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv').config()
-const userRouter = require('./routes/user.route')
+const userRoute = require('./routes/user.route')
+const authRoute = require('./routes/auth.route')
 
 const app  = express()
+app.use(express.json())
 
 
 mongoose
@@ -12,8 +14,9 @@ mongoose
     .catch((err) => console.log('Something went wrong', err))
 
 
-app.use(express.json())
-app.use('/api/user', userRouter)
+
+app.use('/api/auth', authRoute)
+app.use('/api/user', userRoute)
 
 
 app.listen(process.env.PORT || 5000, () => {
