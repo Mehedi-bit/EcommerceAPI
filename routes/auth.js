@@ -1,5 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = require('../models/User.model')
 
@@ -43,7 +44,7 @@ router.post('/login', async (req, res) => {
         // Find user based on provided email
         const user = await User.findOne({ email: req.body.email});
         if (!user) {
-            return res.status(404).json({ message: "User not found!" });
+            return res.status(404).json({ message: "Wrong Credentials!" });
         }
 
         // Compare the entered password with the stored hash
@@ -53,12 +54,24 @@ router.post('/login', async (req, res) => {
         }
 
         // Password  matched, authentication successful
+        // Now Authorize with JWT
+        const accessToken = jwt.sign(
+            {
+                id: user._id,
+                isAdmin: user.isAdmin,
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: '3d'
+            }
+        )
+
         const { password, ...others } = user._doc;
-        res.status(200).json(others)
+        res.status(200).json({ ...others, accessToken})
 
 
     } catch (err) {
-        res.send(401).json({error: 'An error occurred'})
+        res.status(401).json({error: 'An error occurred'})
     }
 })
 
