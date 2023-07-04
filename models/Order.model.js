@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
+const { Schema } = mongoose;
 
 
-const OrderSchema = new mongoose.schema({
+const OrderSchema = new Schema({
     userId:{
         type: String,
         required: true,
