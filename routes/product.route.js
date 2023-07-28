@@ -1,5 +1,4 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const { verifyTokenAndAuthorization, verifyTokenAndAdmin } = require('./verifyToken');
 const Product = require('../models/Product.model');
 
@@ -33,7 +32,7 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
             }
         )
 
-        res.status(200).json(updatedUser);
+        res.status(200).json(updatedProduct);
 
     } catch (err) {
         res.status(500).json(err)
@@ -83,6 +82,7 @@ router.get('/', async (req, res) => {
     try {
         let products;
 
+        // FIND NEW PRODUCTS AND ALSO FIND CATEGORY WISE PRODUCTS
         if (queryNew) {
             products = await Product.find().sort({createdAt: -1}).limit(10);
         } else if (queryCategory) {
@@ -101,36 +101,6 @@ router.get('/', async (req, res) => {
         res.status(500).json(err);
     }
 })
-
-
-// // GET USER STATS
-// router.get('/stats', verifyTokenAndAdmin, async (req, res) => {
-//     const date = new Date()
-//     const lastYear = new Date(date.setFullYear(date.getFullYear() -1))
-
-//     try {
-//         const data = await User.aggregate([
-//             { $match: { createdAt: { $gte: lastYear} } },
-//             {
-//                 $project: {
-//                     month: { $month: "$createdAt" }
-//                 }
-//             },
-//             {
-//                 $group: {
-//                     _id: "$month",
-//                     total: { $sum: 1 }
-//                 }
-//             }
-//         ]) 
-
-//         res.status(200).json(data)
-
-//     } catch (err) {
-//         res.status(500).json(err);
-//     }
-// })
-
 
 
 module.exports = router;
