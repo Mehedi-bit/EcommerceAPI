@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require('./verifyToken');
-const Order = require('../models/Cart.model');
+const Order = require('../models/Order.model');
 
 const router = express.Router()
 
